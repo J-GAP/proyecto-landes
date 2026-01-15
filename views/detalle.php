@@ -1,0 +1,3 @@
+<?php
+// Motor Detail View
+?>
