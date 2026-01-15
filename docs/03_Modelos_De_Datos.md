@@ -47,6 +47,10 @@ Registros de paradas operativas. En el MVP, esta entidad es de **Solo Lectura**.
 - **Inicio y Fin**: Duración del evento.
 - **Motivo**: Causa raíz (Falla, Operacional, etc.).
 - **Clasificación**: Tipo de detención.
+- **Horas de Producción**: Cantidad de horas de producción totales.
+- **Horas de Detención**: Cantidad de horas de detención totales.
+- **Horas de Operación**: Cantidad de horas de operación totales.
+- **Porcentaje de Detención**: Porcentaje de horas de detención sobre las horas de operación.   
 
 ## 3.3 Tratamiento de Datos en el MVP
 
