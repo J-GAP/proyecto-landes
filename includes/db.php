@@ -18,7 +18,7 @@ try {
     $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
 } catch (PDOException $e) {
-    // Si falla, detener todo y mostrar mensaje (solo para desarrollo)
+    // Si falla, detener todo y mostrar mensaje 
     die("Error de conexión a la Base de Datos: " . $e->getMessage());
 }
 ?>
