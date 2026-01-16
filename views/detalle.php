@@ -14,6 +14,9 @@ if (!$motor) {
 $componentes = getComponentsByMotorId($pdo, $motorId);
 $mantenimientos = getMaintenanceHistory($pdo, $motorId);
 $detenciones = getDowntimeHistory($pdo, $motorId);
+
+// Calcular KPI
+$kpi = getAvailabilityKPI($pdo, $motorId);
 ?>
 
 <?php include '../includes/header.php'; ?>
@@ -21,17 +24,30 @@ $detenciones = getDowntimeHistory($pdo, $motorId);
 <!-- Encabezado del Motor -->
 <div class="card shadow-sm mb-4 border-0">
     <div class="card-body">
-        <div class="d-flex align-items-center mb-3">
-            <div class="bg-primary text-white rounded-circle p-3 me-3">
-                <i class="bi bi-hdd-rack-fill fs-3"></i>
+        <div class="row align-items-center">
+            <div class="col-8">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="bg-primary text-white rounded-circle p-3 me-3">
+                        <i class="bi bi-hdd-rack-fill fs-3"></i>
+                    </div>
+                    <div>
+                        <h5 class="card-title fw-bold mb-0"><?php echo htmlspecialchars($motor['name']); ?></h5>
+                        <small class="text-muted"><?php echo htmlspecialchars($motor['serial_number']); ?></small>
+                    </div>
+                </div>
             </div>
-            <div>
-                <h5 class="card-title fw-bold mb-0"><?php echo htmlspecialchars($motor['name']); ?></h5>
-                <small class="text-muted"><?php echo htmlspecialchars($motor['serial_number']); ?></small>
+            <div class="col-4 text-center">
+                <!-- Canvas para el Gráfico -->
+                <div style="width: 80px; height: 80px; margin: 0 auto; position: relative;">
+                    <canvas id="kpiChart"></canvas>
+                    <!-- KPIs Ocultos para JS -->
+                    <input type="hidden" id="kpiValue" value="<?php echo $kpi; ?>">
+                </div>
+                <small class="fw-bold d-block mt-1" style="font-size: 0.75rem;">Disp.</small>
             </div>
         </div>
         
-        <div class="row g-2">
+        <div class="row g-2 mt-2">
             <div class="col-6">
                 <div class="p-2 border rounded bg-light">
                     <small class="d-block text-muted">Marca/Modelo</small>
@@ -46,20 +62,14 @@ $detenciones = getDowntimeHistory($pdo, $motorId);
             </div>
         </div>
         
-        <div class="mt-3">
-            <div class="d-flex justify-content-between mb-2">
-                <span class="badge <?php echo ($motor['status'] == 'En Operación') ? 'bg-success' : 'bg-danger'; ?> flex-grow-1 me-2 py-2">
-                    <i class="bi bi-circle-fill me-1 small"></i> 
-                    <?php echo htmlspecialchars($motor['status']); ?>
-                </span>
-                <?php 
-                    $kpi = getAvailabilityKPI($pdo, $motorId); 
-                    $kpiColor = ($kpi >= 90) ? 'text-success' : (($kpi >= 80) ? 'text-warning' : 'text-danger');
-                ?>
-                <span class="border rounded px-3 py-1 bg-light fw-bold <?php echo $kpiColor; ?>" title="Disponibilidad Histórica">
-                    <i class="bi bi-activity"></i> <?php echo $kpi; ?>%
-                </span>
-            </div>
+        <div class="mt-3 d-flex gap-2">
+            <span class="badge <?php echo ($motor['status'] == 'En Operación') ? 'bg-success' : 'bg-danger'; ?> flex-grow-1 d-flex align-items-center justify-content-center py-2">
+                <i class="bi bi-circle-fill me-1 small"></i> 
+                <?php echo htmlspecialchars($motor['status']); ?>
+            </span>
+            <a href="mailto:soporte@landes.cl?subject=Reporte Motor <?php echo $motor['serial_number']; ?>" class="btn btn-outline-warning btn-sm d-flex align-items-center" title="Reportar Problema">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+            </a>
         </div>
     </div>
 </div>
