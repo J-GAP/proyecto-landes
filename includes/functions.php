@@ -52,4 +52,32 @@ function getDowntimeHistory($pdo, $motorId)
     $stmt->execute(['motor_id' => $motorId]);
     return $stmt->fetchAll();
 }
+
+/**
+ * Calcular Disponibilidad (KPI Simple).
+ * @param PDO $pdo Conexión a la base de datos
+ * @param int $motorId ID del motor
+ * @return float Porcentaje de disponibilidad (0-100)
+ */
+function getAvailabilityKPI($pdo, $motorId)
+{
+    // Sumar horas totales de operación y detención
+    $stmt = $pdo->prepare("
+        SELECT 
+            SUM(operation_hours) as total_operation, 
+            SUM(downtime_hours) as total_downtime 
+        FROM downtime_events 
+        WHERE motor_id = :motor_id
+    ");
+    $stmt->execute(['motor_id' => $motorId]);
+    $result = $stmt->fetch();
+
+    $totalTime = $result['total_operation'] + $result['total_downtime'];
+
+    if ($totalTime <= 0) {
+        return 100.0; // Asumimos 100% si no hay registros de falla
+    }
+
+    return round(($result['total_operation'] / $totalTime) * 100, 1);
+}
 ?>

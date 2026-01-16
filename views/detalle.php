@@ -47,10 +47,19 @@ $detenciones = getDowntimeHistory($pdo, $motorId);
         </div>
         
         <div class="mt-3">
-            <span class="badge <?php echo ($motor['status'] == 'En Operación') ? 'bg-success' : 'bg-danger'; ?> w-100 py-2">
-                <i class="bi bi-circle-fill me-1 small"></i> 
-                <?php echo htmlspecialchars($motor['status']); ?>
-            </span>
+            <div class="d-flex justify-content-between mb-2">
+                <span class="badge <?php echo ($motor['status'] == 'En Operación') ? 'bg-success' : 'bg-danger'; ?> flex-grow-1 me-2 py-2">
+                    <i class="bi bi-circle-fill me-1 small"></i> 
+                    <?php echo htmlspecialchars($motor['status']); ?>
+                </span>
+                <?php 
+                    $kpi = getAvailabilityKPI($pdo, $motorId); 
+                    $kpiColor = ($kpi >= 90) ? 'text-success' : (($kpi >= 80) ? 'text-warning' : 'text-danger');
+                ?>
+                <span class="border rounded px-3 py-1 bg-light fw-bold <?php echo $kpiColor; ?>" title="Disponibilidad Histórica">
+                    <i class="bi bi-activity"></i> <?php echo $kpi; ?>%
+                </span>
+            </div>
         </div>
     </div>
 </div>
